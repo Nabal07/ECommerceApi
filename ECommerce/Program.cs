@@ -18,10 +18,11 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 
 builder.Services.AddScoped<ECommerce.Domain.Interfaces.Repositories.IPedidoRepository, ECommerce.Infrastructure.Repositories.PedidoRepository>();
 builder.Services.AddScoped<ECommerce.Domain.Interfaces.Repositories.IProdutoRepository, ECommerce.Infrastructure.Repositories.ProdutoRepository>();
+builder.Services.AddScoped<ECommerce.Domain.Interfaces.Repositories.IUsuarioRepository, ECommerce.Infrastructure.Repositories.UsuarioRepository>();
 
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
-
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,6 +37,12 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
+
+app.MapGet("api/v1/usuarios", async (IUsuarioService service) => {
+    var listaUsuarios= await service.ObterTodos();
+
+    return Results.Ok(listaUsuarios);
+});
 
 app.MapGet("api/v1/produtos", async (IProdutoService service) => {
     var listaProdutos = await service.ObterTodos();
