@@ -23,6 +23,8 @@ builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+builder.Services.AddHealthChecks();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -95,5 +97,8 @@ app.MapDelete("api/v1/pedidos/{id}", async (Guid id, IPedidoService service) => 
         return Results.BadRequest(new { mensagem = ex.Message });
     }
 });
+
+app.UseHealthChecks("/hc"); 
+
 
 app.Run();
