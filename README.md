@@ -107,8 +107,7 @@ No arquivo appsettings.json:
 
 ### 3. Executar migrations
 
-dotnet ef migrations add InitialCreate  
-dotnet ef database update  
+dotnet ef database update  OU Update-Database
 
 ---
 
@@ -122,16 +121,18 @@ dotnet run
 
 ### Pedidos
 
-- GET /api/pedidos  
-- POST /api/pedidos  
-- PUT /api/pedidos/{id}  
-- DELETE /api/pedidos/{id}  
+- GET /api/v1/pedidos  
+- GET /api/v1/pedidos/{id}
+- POST /api/v1/pedidos  
+- PUT /api/v1/pedidos/{id}  
+- DELETE /api/v1/pedidos/{id}  
 
 ### Produtos
 
-- GET /api/produtos  
-- POST /api/produtos  
+- GET /api/v1/produtos  
 
+### Usuarios
+- GET /api/v1/usuarios
 ---
 
 ## 📄 Documentação
