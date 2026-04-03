@@ -4,14 +4,14 @@ namespace ECommerce.Application.Interfaces.Services;
 
 public interface IPedidoService
 {
-    Task <List<ViewPedidoDTO>> ObterTodos();
+    Task <List<ViewPedidoDTO>> ObterTodosAsync();
 
-    Task<ViewPedidoDTO> ObterPorId(Guid id);
+    Task<ViewPedidoDTO> ObterPorIdAsync(Guid id);
 
-    Task CriarPedido(InputPedidoDTO dto);
+    Task CriarPedidoAsync(InputPedidoDTO dto);
 
-    Task<List<ViewPedidoDTO>> AtualizarPedido(EditPedidoDTO dto);
+    Task AtualizarPedidoAsync(Guid id, EditPedidoDTO dto);
 
-    Task ExcluirPedido(Guid id);
+    Task ExcluirPedidoAsync(Guid id);
 
 }

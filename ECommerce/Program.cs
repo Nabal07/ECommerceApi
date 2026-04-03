@@ -1,7 +1,6 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces.Services;
 using ECommerce.Application.Services;
-using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -39,44 +38,62 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("api/v1/usuarios", async (IUsuarioService service) => {
-    var listaUsuarios= await service.ObterTodos();
+    var listaUsuarios= await service.ObterTodosAsync();
 
     return Results.Ok(listaUsuarios);
 });
 
 app.MapGet("api/v1/produtos", async (IProdutoService service) => {
-    var listaProdutos = await service.ObterTodos();
+    var listaProdutos = await service.ObterTodosAsync();
 
     return Results.Ok(listaProdutos);
 });
 
 app.MapGet("api/v1/pedidos", async (IPedidoService service) => {
-    var listaPedidos = await service.ObterTodos();
+    var listaPedidos = await service.ObterTodosAsync();
 
     return Results.Ok(listaPedidos);
 });
 
 app.MapGet("api/v1/pedidos/{id}", async (Guid id, IPedidoService service) => {
-    var listarPedidos = await service.ObterPorId(id);
+    
+    var pedido = await service.ObterPorIdAsync(id);
 
-    return Results.Ok(listarPedidos);
+    if(pedido == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(pedido);
 });
 
 app.MapPost("api/v1/pedidos", async (InputPedidoDTO dto, IPedidoService service) => {
-    await service.CriarPedido(dto);
+    await service.CriarPedidoAsync(dto);
 
     return Results.Created($"/api/pedidos", dto);
 });
 
-app.MapPut("api/v1/pedidos/{id}", () => {
-
-    return Results.Ok();
+app.MapPut("api/v1/pedidos/{id}", async (Guid id, EditPedidoDTO dto, IPedidoService service) => {
+    try
+    {
+        await service.AtualizarPedidoAsync(id, dto);
+        return Results.NoContent();
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
 });
-
-app.MapDelete("api/v1/pedidos/{id}", () => {
-
-
-    return Results.Ok();
+app.MapDelete("api/v1/pedidos/{id}", async (Guid id, IPedidoService service) => {
+    try
+    {
+        await service.ExcluirPedidoAsync(id);
+        return Results.NoContent(); 
+    }
+    catch (InvalidOperationException ex)
+    {
+        return Results.BadRequest(new { mensagem = ex.Message });
+    }
 });
 
 app.Run();

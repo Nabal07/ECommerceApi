@@ -34,4 +34,22 @@ public class Pedido
         Itens.Add(itemPedido);
     }
 
+    public void AlterarStatus(EStatusPedido novoStatus)
+    {
+        if (novoStatus == EStatusPedido.Processado && Status != EStatusPedido.Iniciado)
+            throw new InvalidOperationException("Apenas pedidos iniciados podem ser processados.");
+
+        if (novoStatus == EStatusPedido.Cancelado &&
+            Status != EStatusPedido.Iniciado && Status != EStatusPedido.Processado)
+            throw new InvalidOperationException("Apenas pedidos iniciados ou processados podem ser cancelados.");
+
+        if (novoStatus == EStatusPedido.Enviado && Status != EStatusPedido.Processado)
+            throw new InvalidOperationException("Apenas pedidos processados podem ser enviados.");
+        
+        if (Status == EStatusPedido.Cancelado)
+            throw new InvalidOperationException("Um pedido cancelado não pode mais ser alterado.");
+
+        Status = novoStatus;
+    }
+
 }

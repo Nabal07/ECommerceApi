@@ -4,7 +4,7 @@ namespace ECommerce.Application.Interfaces.Services;
 
 public interface IUsuarioService
 {
-    Task<List<ViewUsuarioDTO>> ObterTodos();
+    Task<List<ViewUsuarioDTO>> ObterTodosAsync();
 
-    Task<ViewUsuarioDTO> ObterPorId(Guid id);
+    Task<ViewUsuarioDTO> ObterPorIdAsync(Guid id);
 }

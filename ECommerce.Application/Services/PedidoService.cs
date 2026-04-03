@@ -18,11 +18,9 @@ public class PedidoService : IPedidoService
         _produtoService = produtoService;
     }
 
-
-
-    public async Task<List<ViewPedidoDTO>> ObterTodos()
+    public  async Task<List<ViewPedidoDTO>> ObterTodosAsync()
     {
-        var pedidos = await _pedidoRepository.ObterTodos();
+        var pedidos = await _pedidoRepository.ObterTodosAsync();
 
         return pedidos.Select(p => new ViewPedidoDTO
         {
@@ -30,15 +28,14 @@ public class PedidoService : IPedidoService
             Status = p.Status,
             DataPedido = p.DataPedido,
             CompradorId = p.CompradorId,
-            Itens = p.Itens
+            Itens = p.Itens.Select(x => ViewPedidoItemDTO.Map(x)).ToList()
+
         }).ToList();
     }
 
-    public async Task<ViewPedidoDTO> ObterPorId(Guid id)
+    public async Task<ViewPedidoDTO> ObterPorIdAsync(Guid id)
     {
-        var pedidos = await _pedidoRepository.ObterPorId(id);
-
-        var pedido = pedidos.FirstOrDefault();
+        var pedido = await _pedidoRepository.ObterPorIdAsync(id);
 
         if (pedido == null)
         {
@@ -51,32 +48,59 @@ public class PedidoService : IPedidoService
             Status = pedido.Status,
             DataPedido = pedido.DataPedido,
             CompradorId = pedido.CompradorId,
-            Itens = pedido.Itens
+            Itens = pedido.Itens.Select(x => ViewPedidoItemDTO.Map(x)).ToList()
         };
     }
-    public async Task CriarPedido(InputPedidoDTO dto)
+
+    public async Task CriarPedidoAsync(InputPedidoDTO dto)
     {
         var novoPedido = new Pedido(dto.IdComprador);
 
         foreach(var p in dto.Produtos)
         {
-            var produtoDb = await _produtoService.ObterPorId(p.Id);
+            var produtoDb = await _produtoService.ObterPorIdAsync(p.Id);
+
+            if(produtoDb == null)
+                throw new Exception($"O ProdutoId {p.Id} não foi encontrado.");
+            
 
             novoPedido.AddItemPedido(produtoDb.Id);
         }
 
-        await _pedidoRepository.CriarPedido(novoPedido);
+        await _pedidoRepository.CriarPedidoAsync(novoPedido);
     }
 
-    public async Task<List<ViewPedidoDTO>> AtualizarPedido(EditPedidoDTO dto)
+    public async Task AtualizarPedidoAsync(Guid id, EditPedidoDTO dto)
     {
-        throw new NotImplementedException();
+        if (!Enum.IsDefined(typeof(EStatusPedido), dto.Status))
+        {
+            throw new InvalidOperationException($"O status {(int)dto.Status} é invalido. Use: 1(Iniciado), 2(Processado), 3(Enviado) ou 4(Cancelado).");
+        }
+
+        var pedido = await _pedidoRepository.ObterPorIdAsync(id);
+
+        if (pedido == null) 
+            throw new Exception($"Pedido com o ID {id} não encontrado.");
+
+        pedido.AlterarStatus(dto.Status);
+
+        await _pedidoRepository.AtualizarPedidoAsync(pedido);
     }
 
-    public async Task ExcluirPedido(Guid id)
+    public async Task ExcluirPedidoAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var pedido = await _pedidoRepository.ObterPorIdAsync(id);
 
-    
+        if (pedido == null)
+            throw new Exception("Pedido não encontrado.");
+
+        if (pedido.Status != EStatusPedido.Cancelado)
+        {
+            throw new InvalidOperationException(
+                $"Não é permitido excluir um pedido com status {pedido.Status}. " +
+                "Apenas pedidos 'Cancelados' podem ser removidos do sistema.");
+        }
+
+        await _pedidoRepository.ExcluirPedidoAsync(id);
+    }
 }

@@ -14,31 +14,37 @@ namespace ECommerce.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<List<Pedido>> ObterTodos()
+        public async Task<List<Pedido>> ObterTodosAsync()
         {
-            return await _context.Pedidos.ToListAsync();
+            return await _context.Pedidos.OrderBy(x => x.DataPedido).ToListAsync();
         }
 
-        public async Task<List<Pedido>> ObterPorId(Guid id)
-        {
+        public async Task<Pedido> ObterPorIdAsync(Guid id)
+        {   
             return await _context.Pedidos
-                .Where(p => p.Id == id)
-                .ToListAsync();
+                .Include(x => x.Itens)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
-        public async Task CriarPedido(Pedido dto)
+        public async Task CriarPedidoAsync(Pedido dto)
         {
             _context.Pedidos.Add(dto);
             await _context.SaveChangesAsync();
         }
 
-        public async Task AtualizarPedido(Pedido dto)
+        public async Task AtualizarPedidoAsync(Pedido dto)
         {
-            throw new NotImplementedException();
+            _context.Pedidos.Update(dto);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task ExcluirPedido(Guid id)
+        public async Task ExcluirPedidoAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var pedido = await _context.Pedidos.FirstOrDefaultAsync(p => p.Id == id);
+            if (pedido != null)
+            {
+                _context.Pedidos.Remove(pedido);
+                await _context.SaveChangesAsync();
+            }
         }
 
        

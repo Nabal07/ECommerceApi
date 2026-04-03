@@ -15,6 +15,6 @@ namespace ECommerce.Application.DTOs
         public DateTime DataPedido { get; set; }
 
         public Guid CompradorId { get; set; }
-        public List<PedidoItem> Itens { get; set; } = new();
+        public List<ViewPedidoItemDTO> Itens { get; set; } = new();
     }
 }

@@ -15,15 +15,14 @@ public class UsuarioRepository : IUsuarioRepository
         _context = context;
     }
 
-    public async Task<List<Usuario>> ObterTodos()
+    public async Task<List<Usuario>> ObterTodosAsync()
     {
         return await _context.Usuarios.ToListAsync();
     }
 
-    public async Task<List<Usuario>> ObterPorId(Guid id)
+    public async Task<Usuario> ObterPorIdAsync(Guid id)
     {
         return await _context.Usuarios
-            .Where(u => u.Id == id)
-            .ToListAsync();
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 }

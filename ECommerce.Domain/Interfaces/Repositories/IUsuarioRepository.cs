@@ -4,6 +4,6 @@ namespace ECommerce.Domain.Interfaces.Repositories;
 
 public interface IUsuarioRepository
 {
-    Task<List<Usuario>> ObterTodos();
-    Task<List<Usuario>> ObterPorId(Guid id);
+    Task<List<Usuario>> ObterTodosAsync();
+    Task<Usuario> ObterPorIdAsync(Guid id);
 }

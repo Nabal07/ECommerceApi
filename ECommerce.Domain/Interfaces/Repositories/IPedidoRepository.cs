@@ -4,14 +4,14 @@ namespace ECommerce.Domain.Interfaces.Repositories;
 
 public interface IPedidoRepository
 {
-    Task<List<Pedido>> ObterTodos();
+    Task<List<Pedido>> ObterTodosAsync();
 
-    Task<List<Pedido>> ObterPorId(Guid id);
+    Task<Pedido> ObterPorIdAsync(Guid id);
 
-    Task CriarPedido(Pedido dto);
+    Task CriarPedidoAsync(Pedido dto);
 
-    Task AtualizarPedido(Pedido dto);
+    Task AtualizarPedidoAsync(Pedido dto);
 
-    Task ExcluirPedido(Guid id);
+    Task ExcluirPedidoAsync(Guid id);
 
 }

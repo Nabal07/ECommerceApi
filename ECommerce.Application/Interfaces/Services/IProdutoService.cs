@@ -4,6 +4,6 @@ namespace ECommerce.Application.Interfaces.Services;
 
 public interface IProdutoService
 {
-    Task<List<ViewProdutoDTO>> ObterTodos();
-    Task<ViewProdutoDTO> ObterPorId(Guid id);
+    Task<List<ViewProdutoDTO>> ObterTodosAsync();
+    Task<ViewProdutoDTO> ObterPorIdAsync(Guid id);
 }

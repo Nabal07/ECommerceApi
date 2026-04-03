@@ -14,9 +14,9 @@ public class UsuarioService : IUsuarioService
         _usuarioRepository = usuarioRepository;
     }
 
-    public async Task<List<ViewUsuarioDTO>> ObterTodos()
+    public async Task<List<ViewUsuarioDTO>> ObterTodosAsync()
     {
-        var usuarios = await _usuarioRepository.ObterTodos();
+        var usuarios = await _usuarioRepository.ObterTodosAsync();
 
         return usuarios.Select(p => new ViewUsuarioDTO
         {
@@ -26,17 +26,13 @@ public class UsuarioService : IUsuarioService
         }).ToList();
     }
 
-    public async Task<ViewUsuarioDTO> ObterPorId(Guid id)
+    public async Task<ViewUsuarioDTO> ObterPorIdAsync(Guid id)
     {
-        var usuarios = await  _usuarioRepository.ObterPorId(id);
-
-        var usuario = usuarios.FirstOrDefault();
+        var usuario = await  _usuarioRepository.ObterPorIdAsync(id);
 
         if (usuario == null)
-        {
-            throw new Exception($"Usuario com o ID {id} não foi encontrado.");
-        }
-
+           throw new Exception($"Usuario com o ID {id} não foi encontrado.");
+    
         return new ViewUsuarioDTO
         {
             Id = usuario.Id,

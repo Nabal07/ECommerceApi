@@ -4,7 +4,7 @@ namespace ECommerce.Domain.Interfaces.Repositories;
 
 public interface IProdutoRepository
 {
-    Task<List<Produto>> ObterTodos();
-    Task<List<Produto>> ObterPorId(Guid id);
+    Task<List<Produto>> ObterTodosAsync();
+    Task<Produto> ObterPorIdAsync(Guid id);
 
 }

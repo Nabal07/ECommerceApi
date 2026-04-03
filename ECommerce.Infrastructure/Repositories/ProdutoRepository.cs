@@ -14,15 +14,15 @@ public class ProdutoRepository : IProdutoRepository
         _context = context;
     }
 
-    public async Task<List<Produto>> ObterTodos()
+    public async Task<List<Produto>> ObterTodosAsync()
     {
         return await _context.Produtos.ToListAsync();
     }
 
-    public async Task<List<Produto>> ObterPorId(Guid id)
+    public async Task<Produto> ObterPorIdAsync(Guid id)
     {
         return await _context.Produtos
-            .Where(p => p.Id == id)
-            .ToListAsync();
+            .FirstOrDefaultAsync(p => p.Id == id);
+            
     }
 }

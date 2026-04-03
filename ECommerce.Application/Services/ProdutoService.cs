@@ -13,9 +13,9 @@ public class ProdutoService : IProdutoService
         _produtoRepository = produtoRepository;
     }
 
-    public async Task<List<ViewProdutoDTO>> ObterTodos()
+    public async Task<List<ViewProdutoDTO>> ObterTodosAsync()
     {
-        var produtos = await _produtoRepository.ObterTodos();
+        var produtos = await _produtoRepository.ObterTodosAsync();
 
         return produtos.Select(p => new ViewProdutoDTO
         {
@@ -26,11 +26,9 @@ public class ProdutoService : IProdutoService
         }).ToList();
     }
 
-    public async Task<ViewProdutoDTO> ObterPorId(Guid id)
+    public async Task<ViewProdutoDTO> ObterPorIdAsync(Guid id)
     {
-        var produtos = await _produtoRepository.ObterPorId(id);
-
-        var produto = produtos.FirstOrDefault();
+        var produto = await _produtoRepository.ObterPorIdAsync(id);
 
         if (produto == null)
         {
