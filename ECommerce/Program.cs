@@ -17,7 +17,11 @@ builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =
 });
 
 builder.Services.AddScoped<ECommerce.Domain.Interfaces.Repositories.IPedidoRepository, ECommerce.Infrastructure.Repositories.PedidoRepository>();
+builder.Services.AddScoped<ECommerce.Domain.Interfaces.Repositories.IProdutoRepository, ECommerce.Infrastructure.Repositories.ProdutoRepository>();
+
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -33,32 +37,36 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapGet("api/v1/produtos", async (IProdutoService service) => {
+    var listaProdutos = await service.ObterTodos();
 
-app.MapGet("api/pedidos", async (IPedidoService service) => {
+    return Results.Ok(listaProdutos);
+});
+
+app.MapGet("api/v1/pedidos", async (IPedidoService service) => {
     var listaPedidos = await service.ObterTodos();
 
     return Results.Ok(listaPedidos);
 });
 
-app.MapGet("api/pedidos/{id}", async (Guid id, IPedidoService service) => {
+app.MapGet("api/v1/pedidos/{id}", async (Guid id, IPedidoService service) => {
     var listarPedidos = await service.ObterPorId(id);
 
     return Results.Ok(listarPedidos);
 });
 
-app.MapPost("api/pedidos", async (InputPedidoDTO dto, IPedidoService service) => {
+app.MapPost("api/v1/pedidos", async (InputPedidoDTO dto, IPedidoService service) => {
     await service.CriarPedido(dto);
 
     return Results.Created($"/api/pedidos", dto);
 });
 
-app.MapPut("api/pedidos/{id}", () => {
-
+app.MapPut("api/v1/pedidos/{id}", () => {
 
     return Results.Ok();
 });
 
-app.MapDelete("api/pedidos/{id}", () => {
+app.MapDelete("api/v1/pedidos/{id}", () => {
 
 
     return Results.Ok();
